@@ -14,7 +14,7 @@ def apply_mirror_boundary_conditions(coord, dim):
     elif coord >= dim:
         coord =  2*(dim-1) - coord % (2*(dim-1))
     # Else, do nothing
-    return coord
+    return int(coord)
 
 
 def get_pixel(image, i, j):
@@ -61,31 +61,29 @@ def get_window(image, window_size, centre_coordinates):
             # Same for the y-coordinate
             j_mirrored = apply_mirror_boundary_conditions(j_centre + j - window_radius, ncols)
             # Fill in the window with the corresponding pixel
-            window[i, j] = image[i_mirrored, j_mirrored]
+            window[i, j, :] = image[i_mirrored, j_mirrored, :]
     return window
-
 
 def shift_to_the_right(image, window, centre_coordinates):
     nrows, ncols = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
-    j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + 1 + window_radius, nrows)
-    shifted = np.roll(window, -1, axis=0)
+    j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + 1 + window_radius, ncols)
+    shifted = np.roll(window, -1, axis=1)
     for i in range(window_size):
-        i_mirrored = apply_mirror_boundary_conditions(i_centre + i - window_radius, nrows)
-        shifted[i, -1] = window[i_mirrored, j_mirrored]
+        i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + i - window_radius, nrows)
+        shifted[i, -1, :] = image[i_mirrored, j_mirrored, :]
     return shifted
-
 
 def shift_to_the_bottom(image, window, centre_coordinates):
     nrows, ncols = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
     i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + 1 + window_radius, nrows)
-    shifted = np.roll(window, -1, axis=1)
+    shifted = np.roll(window, -1, axis=0)
     for j in range(window_size):
-        j_mirrored = apply_mirror_boundary_conditions(j_centre + j - window_radius, ncols)
-        shifted[-1, j] = window[i_mirrored, j_mirrored]
+        j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + j - window_radius, ncols)
+        shifted[-1, j, :] = image[i_mirrored, j_mirrored, :]
     return shifted
 
 
@@ -98,7 +96,12 @@ def sliding_window(image, window_size):
     """
     nrows, ncols = image.shape
     windows = []
-    for i in range(nrows):
-        for j in range(ncols):
-            # TODO: do not rebuild the entire window at each loop, some values do not move.
-            window = get_window(image, window_size, [i, j])
+    i = 0
+    row_windows = [get_window(image, window_size, [i, 0])]
+    for j in range(ncols-1):
+        row_windows += [shift_to_the_right(image, row_windows[-1], [i, j])]
+    windows += row_windows
+    for i in range(nrows-1):
+        row_windows = [shift_to_the_bottom(image, row_windows[j], [i, j]) for j in range(ncols)]
+        windows += row_windows
+    return windows
