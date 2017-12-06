@@ -17,27 +17,28 @@ def apply_mirror_boundary_conditions(coord, dim):
     return coord
 
 
-def getpixel(image, x, y):
+def get_pixel(image, i, j):
     """
-    Return the value of the pixel (x,y) in image, with mirror boundary condition
+    Return the value of the pixel (i,j) in image, with mirror boundary conditions
+    Note that (i,j) = (y,x) in pixel coordinate (assuming image conventions)
     Input:
-        image: the image tensor; size: (width, height, channel_num)
-        x: the x-coordinate of the pixel
-        y: the y-ccordinate of the pixel
+        image: the image array; size:(width, height, num_channel)
+        i: the row-coordinate of the pixel
+        j: the col-ccordinate of the pixel
     Output:
-        val: the value of the pixel; size: (channel_num,)
+        the value of the pixel; size:(num_channel,)
     """
     width = image.shape[0]
     height = image.shape[1]
-    if x < 0:
-        x = -x
-    if x >= width:
-        x = 2*width - 2 - (x % (2*width-2))
-    if y < 0:
-        y = -y
-    if y >= height:
-        y = 2*height - 2 - (y % (2*height-2))
-    return image[x,y,:]
+    if i < 0:
+        i = -i
+    if i >= height:
+        i = 2*height - 2 - (i % (2*height-2))
+    if j < 0:
+        j = -j
+    if j >= width:
+        j = 2*width - 2 - (j % (2*width-2))
+    return image[int(i),int(j),:]
 
 
 def get_window(image, window_size, centre_coordinates):
