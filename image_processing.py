@@ -64,44 +64,44 @@ def get_window(image, window_size, centre_coordinates):
             window[i, j, :] = image[i_mirrored, j_mirrored, :]
     return window
 
-def shift_to_the_right(image, window, centre_coordinates):
-    nrows, ncols = image.shape
+def shift_to_the_right(image, window, centre_coordinates, step=1):
+    nrows, ncols, _ = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
-    j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + 1 + window_radius, ncols)
-    shifted = np.roll(window, -1, axis=1)
+    j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + step + window_radius, ncols)
+    shifted = np.roll(window, -step, axis=1)
     for i in range(window_size):
         i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + i - window_radius, nrows)
         shifted[i, -1, :] = image[i_mirrored, j_mirrored, :]
     return shifted
 
-def shift_to_the_bottom(image, window, centre_coordinates):
-    nrows, ncols = image.shape
+def shift_to_the_bottom(image, window, centre_coordinates, step=1):
+    nrows, ncols, _ = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
-    i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + 1 + window_radius, nrows)
-    shifted = np.roll(window, -1, axis=0)
+    i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + step + window_radius, nrows)
+    shifted = np.roll(window, -step, axis=0)
     for j in range(window_size):
         j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + j - window_radius, ncols)
         shifted[-1, j, :] = image[i_mirrored, j_mirrored, :]
     return shifted
 
-
-def sliding_window(image, window_size):
+def sliding_window(image, window_size, step=1):
     """
     Construct a list of sliding windows of given size on an image.
     The windows will slide from left to right and from up to down.
         image: a numpy array representing our image
         window_size: an odd number specifying the size of the window
+        step: the value of the shift between windows
     """
-    nrows, ncols = image.shape
+    nrows, ncols, _ = image.shape
     windows = []
     i = 0
     row_windows = [get_window(image, window_size, [i, 0])]
-    for j in range(ncols-1):
-        row_windows += [shift_to_the_right(image, row_windows[-1], [i, j])]
+    for j in range(0, ncols-1, step):
+        row_windows += [shift_to_the_right(image, row_windows[-1], [i, j], step)]
     windows += row_windows
-    for i in range(nrows-1):
-        row_windows = [shift_to_the_bottom(image, row_windows[j], [i, j]) for j in range(ncols)]
+    for i in range(0, nrows-1, step):
+        row_windows = [shift_to_the_bottom(image, row_windows[int(j/step)], [i, j], step) for j in range(0, ncols, step)]
         windows += row_windows
     return windows
