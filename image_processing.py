@@ -68,22 +68,26 @@ def shift_to_the_right(image, window, centre_coordinates, step=1):
     nrows, ncols, _ = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
-    j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + step + window_radius, ncols)
     shifted = np.roll(window, -step, axis=1)
     for i in range(window_size):
-        i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + i - window_radius, nrows)
-        shifted[i, -1, :] = image[i_mirrored, j_mirrored, :]
+        i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + i - window_radius, nrows)            
+        for j in range(window_size-step, window_size):
+            j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + j - window_radius + step, ncols)
+            shifted[i, j, :] = image[i_mirrored, j_mirrored, :]
     return shifted
 
 def shift_to_the_bottom(image, window, centre_coordinates, step=1):
     nrows, ncols, _ = image.shape
     window_size = len(window)
     window_radius = (window_size - 1)/2
-    i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + step + window_radius, nrows)
     shifted = np.roll(window, -step, axis=0)
+    #print('shifted\n', shifted[:,:,0], '\n')
     for j in range(window_size):
         j_mirrored = apply_mirror_boundary_conditions(centre_coordinates[1] + j - window_radius, ncols)
-        shifted[-1, j, :] = image[i_mirrored, j_mirrored, :]
+        for i in range(window_size-step, window_size):
+            i_mirrored = apply_mirror_boundary_conditions(centre_coordinates[0] + i - window_radius + step, nrows)
+            #print(i, i_mirrored)
+            shifted[i, j, :] = image[i_mirrored, j_mirrored, :]
     return shifted
 
 def sliding_window(image, window_size, step=1):
@@ -105,3 +109,15 @@ def sliding_window(image, window_size, step=1):
         row_windows = [shift_to_the_bottom(image, row_windows[int(j/step)], [i, j], step) for j in range(0, ncols, step)]
         windows += row_windows
     return windows
+
+def compute_all_windows(img_train, label_train, window_size, step):
+    for im, labels, i in zip(img_train, label_train, range(len(img_train))):
+        w_im = sliding_window(im, window_size, step)
+        w_labels = sliding_window(labels[:, :, np.newaxis], window_size, step)
+        path = './windows_train/' + str(i)
+        os.makedirs(path, exist_ok=True)
+        for wi, wl, j in zip(w_im, w_labels, range(len(w_im))):
+            img_name = path + '/im_' + str(j) + '.png'
+            plt.imsave(img_name, wi)
+            label_name = path + '/label_' + str(j) + '.png'
+            plt.imsave(label_name, wl[:,:,0])
