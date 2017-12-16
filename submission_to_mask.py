@@ -1,9 +1,7 @@
 #!/usr/bin/python
-import os
-import sys
+
 import Image
 import math
-import matplotlib.image as mpimg
 import numpy as np
 
 label_file = 'dummy_submission.csv'

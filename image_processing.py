@@ -38,7 +38,10 @@ def get_pixel(image, i, j):
         j = -j
     if j >= width:
         j = 2*width - 2 - (j % (2*width-2))
-    return image[int(i),int(j),:]
+    if len(image.shape) == 3:
+        return image[int(i),int(j),:]
+    else:
+        return image[int(i),int(j)]
 
 
 def get_window(image, window_size, centre_coordinates):
