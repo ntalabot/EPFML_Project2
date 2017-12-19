@@ -7,6 +7,8 @@ Road segmentation project for the Machine Learning Course at EPFL
 
 * Try to add an edge detection before the network, and see if results improve
 
+* Can use `del x` in order to delete a variable and free some memory space during the execution of the program
+
 ## TODO:
 0. Choose librairies to work with for the final submission (maybe we can try out models and cross-validation with multiple I guess, but we should stick with one for the `run.py`, and for the report)
 
