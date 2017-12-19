@@ -1,7 +1,15 @@
 # EPFML_Project2
 Road segmentation project for the Machine Learning Course at EPFL
 
+## Ideas:
+* As the dataset is imbalanced, we should do something:
+   * e.g.: with Binary Cross Entropy, give weights to each class to increase the loss of the smallest class (here road), and decrease the loss of the biggest. (I have used ratio = road / (raod+background) to compute the weights: [ratio, 1-ratio])
+
+* Try to add an edge detection before the network, and see if results improve
+
 ## TODO:
+0. Choose librairies to work with for the final submission (maybe we can try out models and cross-validation with multiple I guess, but we should stick with one for the `run.py`, and for the report)
+
 1. *Rigoroulsy* find a good model:
    1. Compare to some baseline methods
    2. What we have tried, different "steps", and if they did work, or not
