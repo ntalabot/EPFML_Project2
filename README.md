@@ -13,7 +13,10 @@ Road segmentation project for the Machine Learning Course at EPFL
 0. Choose librairies to work with for the final submission (maybe we can try out models and cross-validation with multiple I guess, but we should stick with one for the `run.py`, and for the report)
 
 1. *Rigoroulsy* find a good model:
-   1. Compare to some baseline methods
+   1. Compare to some baseline methods (taken from the project description):
+   
+      "[...] include several properly implemented baseline algorithms as a comparison to your approach."
+   
    2. What we have tried, different "steps", and if they did work, or not
       * compare the evolution of evaluation metric, i.e. F1-score
 
