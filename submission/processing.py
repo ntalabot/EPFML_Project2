@@ -123,7 +123,7 @@ def image_to_windows(image, window_size=PATCH_SIZE):
     return windows
 
 
-def extract_windows(images, window_size=PATCH_SIZE):
+def extract_windows(images, window_size=PATCH_SIZE, verbose=False):
     """
     Return the windows around each patch of pixels in every images (mirror boundary conditions apply)
     Input:
@@ -132,13 +132,18 @@ def extract_windows(images, window_size=PATCH_SIZE):
         window_size (int): size of the windows' side
                            should be even, and bigger than PATCH_SIZE
                            (default: PATCH_SIZE)
+        verbose (boolean): flag to print the current state (default: False)
     Output:
         windows (numpy.ndarray): the windows array
                                  size:(num_images, (height*width/PATCH_SIZE)**2, 
                                        window_size, window_size, num_channel)
     """
     windows = []
+    if verbose:
+        print("Extracting the windows:\n")
     for i in range(0, images.shape[0]):
+        if verbose:
+            print("Extracting from image [%d/%d]" % (i+1, images.shape[0]))
         windows.append(image_to_windows(images[i], window_size=window_size))
     return np.asarray(windows)
 
