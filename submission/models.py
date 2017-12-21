@@ -114,6 +114,9 @@ def f1(y_true, y_pred):
     return 2*((precision*recall)/(precision+recall))
 	
 def get_pretrained_models():
+	"""
+    Load and return pretrained models
+    """
 	model1 = load_model('DilNet_16_enh.h5', custom_objects= {'f1': f1})
 	model2 = load_model('FCN_16_enh2.h5', custom_objects= {'f1': f1})
 	model3 = load_model('DilNet_16_enh2.h5', custom_objects= {'f1': f1})
@@ -121,7 +124,10 @@ def get_pretrained_models():
 	
 from data_handler import extract_data, extract_labels, extract_test_data, masks_to_submission, img_crop, label_to_img
 
-def train_and_get_models(data_dir):
+def train_and_get_models(data_dir):	
+	"""
+    Train models on images from data_dir and return them
+    """
 	train_data_filename = data_dir + 'images/'
 	train_labels_filename = data_dir + 'groundtruth/' 
 	
@@ -142,6 +148,9 @@ def train_and_get_models(data_dir):
 
 # Get prediction for given input image 
 def keras_prediction_av3(model1, model2, model3, img):
+    """
+    Get combined predictions of an ensemble of three models for an image
+    """
     data = np.asarray(img_crop(img, PATCH_SIZE, PATCH_SIZE))
     pred1 = 1-model1.predict(data)
     pred2 = 1-model2.predict(data)
@@ -151,7 +160,10 @@ def keras_prediction_av3(model1, model2, model3, img):
     return img_prediction
 	
 def get_predictions(model1, model2, model3, test_data_dir):
-	test_data, file_names = extract_test_data(test_data_dir, TEST_SIZE)
-	submission_filename = 'submission.csv'
-	images = [keras_prediction_av3(model1, model2, model3, test_data[i]) for i in range(test_data.shape[0])]
-	masks_to_submission(submission_filename, images, file_names)
+    """
+    Get combined predictions of an ensemble of three models on test images in test_data_dir
+    """
+    test_data, file_names = extract_test_data(test_data_dir, TEST_SIZE)
+    submission_filename = 'submission.csv'
+    images = [keras_prediction_av3(model1, model2, model3, test_data[i]) for i in range(test_data.shape[0])]
+    masks_to_submission(submission_filename, images, file_names)
