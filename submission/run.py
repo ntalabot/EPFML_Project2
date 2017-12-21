@@ -15,7 +15,7 @@ from processing import extract_windows
 parser = argparse.ArgumentParser()
 parser.add_argument("--verbose", help="allow printing in the code (e.g. the current Epoch,...)",
                     action="store_true")
-parser.add_argument("--pre_trained", help="use the existing model to make the prediction, without training it",
+parser.add_argument("--train_model", help="train the whole model, do not reuse the pre-trained one",
                     action="store_true")
 parser.add_argument("--low_memory", help="for computer with lower memory, may slow down the code",
                     action="store_true")
