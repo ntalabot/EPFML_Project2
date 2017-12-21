@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Module containing functions to process the data, as window extraction, 
-predicting labels, and processing labels
+Module containing functions to process the data, as window extraction, ???
 
 Authors: Kirill IVANOV, Matthias RAMIREZ, Nicolas TALABOT
 """
