@@ -9,7 +9,6 @@ Authors: Kirill IVANOV, Matthias RAMIREZ, Nicolas TALABOT
 import argparse
 
 from models import get_pretrained_models, train_and_get_models, get_predictions
-from processing import extract_windows
 
 # Argument parser
 parser = argparse.ArgumentParser()
