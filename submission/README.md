@@ -15,12 +15,13 @@ and for the time required to run the code as a function of CPU/GPU
 ### How to install *TODO*
 Put here step to install additional libraires
 
-## Launching `run.py` *TODO - Add flags explication, etc. (e.g. CPU/GPU, use pre-trained model, verbose, ...)*
+## Launching `run.py` *TODO*
 In order to use `run.py`, follow these steps:
 1. Put the *training/* and *test_set_images/* folders at the same place as `run.py`
-2. Open a terminal and run `python run.py`
-3. Wait for it to compute the model and create the submission file (it should take 3 to 5 min)
-4. A new file *run_submission.csv* has been created, which contains the prediction for the Kaggle competition
+2. Open a terminal and run `python run.py`, you may want to add some flags at the end:
+   * `--verbose`: allow the code to print the current state (e.g., current epoch, batch,...)
+   * `--pre_trained`: predict the kaggle labels with an already trained model, instead of training a new one beforehand
+   * `--low_memory`: for computer with smaller memory, in case the variables don't fit (may slow down the code)
 
 ## Code architecture *TODO*
 ### `run.py` *TODO*
